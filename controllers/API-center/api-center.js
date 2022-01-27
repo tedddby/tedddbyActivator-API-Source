@@ -293,7 +293,14 @@ const genKey = (req, res) => {
     if(genKeyPassword == genKeyInsertedPassword){
         var accessToken = randtoken.generate(30);
         var token = jwt.sign({serverIP: req.query.server, accessToken:accessToken, user:req.query.user}, envData.JWT_Private_Key, { });
-        return res.status(200).send(token);
+        
+        db.query("INSERT INTO `api_center` SET ?", [{ server_ip:req.query.server, access_token:accessToken, credits:req.query.credits }], (e) => {
+            if(e){
+                return res.status(500).send("Internal Database Error");
+            }else{
+                return res.status(200).send(token);
+            }
+        })
     }else{
         return res.status(401).send("Invalid Password!");
     }
