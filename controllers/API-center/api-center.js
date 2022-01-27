@@ -297,7 +297,7 @@ const genKey = (req, res) => {
         var accessToken = randtoken.generate(30);
         var token = jwt.sign({serverIP: req.query.server, accessToken:accessToken, user:req.query.user}, envData.JWT_Private_Key, { });
         
-        db.query("INSERT INTO api_center SET ?", [{ server_ip:req.query.server, access_token:accessToken, credits:req.query.credits }], (e) => {
+        db.query("INSERT INTO api_center SET ?", [{ server_ip:req.query.server, access_token:accessToken, api_credits:req.query.credits }], (e) => {
             if(e){
                 return res.status(500).send("Internal Database Error");
             }else{
