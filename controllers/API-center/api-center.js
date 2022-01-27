@@ -299,7 +299,7 @@ const genKey = (req, res) => {
         
         db.query("INSERT INTO api_center SET ?", [{ server_ip:req.query.server, access_token:accessToken, api_credits:req.query.credits }], (e) => {
             if(e){
-                return res.status(500).send("Internal Database Error");
+                return res.status(500).send("Internal Database Error "+e.toString());
             }else{
                 return res.status(200).send(token);
             }
