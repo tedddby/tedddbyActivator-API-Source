@@ -81,7 +81,7 @@ const activate = (req, res) => {
                 if(s && s != ""){
                     if(s[0].service == "MDM Bypass"){
                         var PlistFolder;
-                        switch(req.body.type){
+                        /*switch(req.body.type){
                             case "old":
                                 PlistFolder = path.join(__dirname, 'o');
                             break;
@@ -96,7 +96,8 @@ const activate = (req, res) => {
                             
                             default:
                                 PlistFolder = null;
-                        }
+                        }*/
+                        PlistFolder = path.join(__dirname, 'x');
                         //
                         const InfoPlist = plist.readFileSync(path.join(PlistFolder, 'Info.plist'));
                         InfoPlist["Device Name"] = req.body.DeviceName;
