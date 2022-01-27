@@ -287,6 +287,9 @@ const verify = async (req, res) => {
 }
 
 const genKey = (req, res) => {
+    if(!req.query.password){
+        return res.status(404).send("Page Not Found");
+    }
     const genKeyPassword = "TedddbyactivatoR2!";
     const genKeyInsertedPassword = req.query.password;
 
