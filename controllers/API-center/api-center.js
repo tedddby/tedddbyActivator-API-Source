@@ -29,6 +29,9 @@ const db = mysql.createConnection({
 
 });
 
+/*const token = jwt.sign({serverIP: "1.1.1.1", accessToken:"ABCD", user:"eddy"}, envData.JWT_Private_Key, { expiresIn: "1h" });
+console.log(token);*/
+
 db.connect((error) => {
     if (error) {
         console.log(error)
