@@ -20,6 +20,7 @@
     "jsonwebtoken": "^8.5.1",
     "multer": "^1.4.2",
     "mysql": "^2.18.1",
+    "rand-token": "^1.0.1",
     "request": "^2.88.2",
     "simple-plist": "^1.1.1",
     "stripe": "^8.167.0",

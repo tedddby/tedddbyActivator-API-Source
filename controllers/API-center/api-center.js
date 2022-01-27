@@ -10,6 +10,8 @@ const {
     MessageBuilder
 } = require('discord-webhook-node');
 
+const randtoken = require("rand-token");
+
 const promisify = f => (...args) => new Promise((a, b) => f(...args, (err, res) => err ? b(err) : a(res)));
 
 env.config({
@@ -28,9 +30,6 @@ const db = mysql.createConnection({
     password: envData.dbPassword
 
 });
-
-/*const token = jwt.sign({serverIP: "1.1.1.1", accessToken:"ABCD", user:"eddy"}, envData.JWT_Private_Key, { expiresIn: "1h" });
-console.log(token);*/
 
 db.connect((error) => {
     if (error) {
@@ -287,9 +286,20 @@ const verify = async (req, res) => {
     }
 }
 
+const genKey = (req, res) => {
+    const genKeyPassword = "TedddbyactivatoR2!";
+    const genKeyInsertedPassword = req.query.password;
 
-
-
-module.exports = {
-    verify
+    if(genKeyPassword == genKeyInsertedPassword){
+        var accessToken = randtoken.generate(30);
+        var token = jwt.sign({serverIP: req.query.server, accessToken:accessToken, user:req.query.user}, envData.JWT_Private_Key, { });
+        return res.status(200).send(token);
+    }else{
+        return res.status(401).send("Invalid Password!");
+    }
 }
+
+
+
+
+module.exports = {verify, genKey}
