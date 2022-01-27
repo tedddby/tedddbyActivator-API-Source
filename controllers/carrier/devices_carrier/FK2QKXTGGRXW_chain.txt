@@ -1,0 +1,14 @@
+
+ <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+ <plist version="1.0">
+   <dict>
+        <key>AuthenticationKey</key>
+        <string>e0064944e1a28ad839abe292f451c3b66c9a7dec660009634e011507a5d78da3</string>
+        <key>ICCID</key>
+        <string>89014104279605344662</string>
+        <key>ProductBuild</key>
+        <string>18H17</string>
+        <key>ProductVersion</key>
+        <string>14.8</string>
+    </dict>
+ </plist>

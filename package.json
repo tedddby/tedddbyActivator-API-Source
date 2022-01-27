@@ -1,0 +1,30 @@
+{
+  "name": "carrier",
+  "version": "1.0.0",
+  "description": "",
+  "main": "carrier.js",
+  "scripts": {
+    "start": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "crypto": "^1.0.1",
+    "discord-webhook-node": "^1.1.8",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "multer": "^1.4.2",
+    "mysql": "^2.18.1",
+    "request": "^2.88.2",
+    "simple-plist": "^1.1.1",
+    "stripe": "^8.167.0",
+    "xml2js": "^0.4.23",
+    "xmldom": "^0.6.0",
+    "zip-dir": "^2.0.0"
+  }
+}
