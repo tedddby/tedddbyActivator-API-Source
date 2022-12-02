@@ -1,0 +1,19 @@
+request.post("https://api.v2.tedddby.com/api-center/activate", {
+    headers:{
+        "Content-Type":"application/xml",
+        "authorization":"YOUR_API_TOKEN_HERE"
+    },
+    form:{
+        "activation-info":"ACTIVATION_INFO_HERE"
+    }
+}, (error, response, body) => {
+    if(error){
+        //deal with error
+    }else{
+        if(response.statusCode === 200){
+            //code block
+        }else{
+            //catch error
+        }
+    }
+});

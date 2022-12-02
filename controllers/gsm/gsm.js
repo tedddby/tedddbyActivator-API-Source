@@ -6,6 +6,8 @@ const fs = require("fs");
 const path = require("path");
 const xmlParser = require("xml2js");
 const { Webhook, MessageBuilder } = require('discord-webhook-node');
+const plist = require("simple-plist");
+const { type } = require("os");
 
 const LogPath = path.join(__dirname, `/logs/log.txt`);
 
@@ -14,6 +16,8 @@ const promisify = f => (...args) => new Promise((a,b)=>f(...args, (err, res) => 
 env.config({
     path:"./secret.env"
 });
+
+
 
 const envData = process.env;
 
@@ -328,30 +332,35 @@ const getRecord = (req, res) => {
 
 const formatt = (data) => {
     var ActivationRecord;
-     const getRecord = xmlParser.parseString(data, (err, rsu) => {
-        if(err) {
-            console.log(error);
-            ActivationRecord = "Internal Server Error";
-        }
-        else{
-            if(data.includes("<key>FairPlayKeyData</key>") != true){
-                ActivationRecord = "No Activation Record";
-            }
-            
-            const AccountTokenCertificate = rsu.plist.dict[0].dict[0].dict[0].data[1]; //1
-            const DeviceCertificate = rsu.plist.dict[0].dict[0].dict[0].data[2]; //2
-            const FairPlayKeyData = rsu.plist.dict[0].dict[0].dict[0].data[0]; //0
-            const AccountToken = rsu.plist.dict[0].dict[0].dict[0].data[3]; //3
-            const AccountTokenSignature = rsu.plist.dict[0].dict[0].dict[0].data[4]; //4
+    if(data.includes("<key>FairPlayKeyData</key>") != true){
+        ActivationRecord = "No Activation Record";
+    }
 
-            const AccTokenDecoded = Buffer.from(AccountToken, "base64").toString("utf-8");
-            const WildCard = AccTokenDecoded.split('"WildcardTicket" = "')[1].split('";')[0];
-            
+    var dataParsed = plist.parse(data);
+    var main = dataParsed['iphone-activation']['activation-record'];
 
-            ActivationRecord = `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
+    var b64 = (d) => {
+        return Buffer.from(d).toString('base64');
+    }
+    
+    const AccountTokenCertificate = b64(main.AccountTokenCertificate); //1
+    const DeviceCertificate = b64(main.DeviceCertificate); //2
+    const FairPlayKeyData = b64(main.FairPlayKeyData); //0
+    const AccountToken = b64(main.AccountToken); //3
+    const AccountTokenSignature = b64(main.AccountTokenSignature); //4
+
+    const AccTokenDecoded = Buffer.from(AccountToken, "base64").toString("utf-8");
+    var WildCard = "";
+    try{
+        WildCard = AccTokenDecoded.split('"WildcardTicket" = "')[1].split('";')[0];
+    }catch{
+        WildCard = AccTokenDecoded.split('"ActivationTicket" = "')[1].split('";')[0];
+    }
+    
+    ActivationRecord = `<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
     <key>AccountToken</key>
     <data>${AccountToken}</data>
     <key>AccountTokenCertificate</key>
@@ -370,10 +379,9 @@ const formatt = (data) => {
     <true/>
     <key>WildcardTicketToRemove</key>
     <data>${WildCard}</data>
-</dict>
-</plist>`;
-        }
-    })
+    </dict>
+    </plist>`;
+
     return ActivationRecord;
 }
 

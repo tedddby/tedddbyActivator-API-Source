@@ -27,6 +27,7 @@ app.get('*', function(req, res){
   res.status(404).json({error:"Page Not Found", status:"404"});
 });
 
+//Under maintenance message:
 /*app.get('*', function(req, res){
   res.status(404).send("<script>alert('We will be back soon!')</script>")
 });*/
