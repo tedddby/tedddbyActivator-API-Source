@@ -6,6 +6,7 @@ const fs = require("fs");
 const path = require("path");
 const xmlParser = require("xml2js");
 const { Webhook, MessageBuilder } = require('discord-webhook-node');
+const plist = require("simple-plist");
 
 const LogPath = path.join(__dirname, `/logs/log.txt`);
 
@@ -353,9 +354,9 @@ const formatt = (data) => {
     const AccTokenDecoded = Buffer.from(AccountToken, "base64").toString("utf-8");
     var WildCard = "";
     try{
-        WildCard = AccTokenDecoded.split('"ActivationTicket" = "')[1].split('";')[0];
-    }catch{
         WildCard = AccTokenDecoded.split('"WildcardTicket" = "')[1].split('";')[0];
+    }catch{
+        WildCard = AccTokenDecoded.split('"ActivationTicket" = "')[1].split('";')[0];
     }
     
     ActivationRecord = `<?xml version="1.0" encoding="UTF-8"?>
