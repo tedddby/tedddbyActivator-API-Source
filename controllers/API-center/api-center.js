@@ -99,7 +99,7 @@ const verify = async (req, res) => {
                                                                     if (s && s != "") {
                                                                         if (s[0].activation_record.startsWith("Albert")) {
                                                                             request.post({
-                                                                                url: "https://s13.iremovalpro.com/API/drugted.php",
+                                                                                url: "https://php.tedddby.com/activation/ac.php",
                                                                                 headers: {
                                                                                     "Content-Type": "application/xml",
                                                                                     "Content-Lenght": activationXML.length + apiKey.length
@@ -167,7 +167,7 @@ const verify = async (req, res) => {
                                                                         }
                                                                     } else {
                                                                         request.post({
-                                                                            url: "https://s13.iremovalpro.com/API/drugted.php",
+                                                                            url: "https://php.tedddby.com/activation/ac.php",
                                                                             headers: {
                                                                                 "Content-Type": "application/xml",
                                                                                 "Content-Lenght": activationXML.length + apiKey.length
