@@ -339,7 +339,12 @@ const formatt = (data) => {
     }
 
     var dataParsed = plist.parse(data);
-    var main = dataParsed['iphone-activation']['activation-record'];
+    var main = "";
+    try{
+        main = dataParsed['iphone-activation']['activation-record'];
+    }catch{
+        main = dataParsed['ipad-activation']['activation-record'];
+    }
 
     var b64 = (d) => {
         return Buffer.from(d).toString('base64');
