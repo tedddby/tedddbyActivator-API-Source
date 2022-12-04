@@ -343,7 +343,7 @@ const formatt = (data) => {
     try{
         main = dataParsed['iphone-activation']['activation-record'];
     }catch{
-        main = dataParsed['ipad-activation']['activation-record'];
+        main = dataParsed['device-activation']['activation-record'];
     }
 
     var b64 = (d) => {
