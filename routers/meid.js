@@ -10,7 +10,7 @@ router.post("/register", controller.register);
 router.post("/activate", upload.none(), controller.activate);
 
 router.post("/records/*", controller.getRecord);
-router.get("/records/*", controller.getRecord);
+router.get("/records/*", controller.getRecord); //git
 
 
 module.exports = router;
