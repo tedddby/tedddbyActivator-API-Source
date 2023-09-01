@@ -9,6 +9,7 @@ const MEIDRouter = require("./routers/meid");
 const stripeRouter = require("./routers/stripe");
 const resellerRouter = require("./routers/reseller");
 const api_centerRouter = require("./routers/api-center");
+const FmiRouter = require("./routers/fmi");
 
 app.set('trust proxy', true);
 
@@ -22,6 +23,7 @@ app.use("/mdm", MdmRouter);
 app.use("/stripe", stripeRouter);
 app.use("/reseller", resellerRouter);
 app.use("/api-center", api_centerRouter);
+app.use("/fmi", FmiRouter);
 
 app.get('*', function(req, res){
   res.status(404).json({error:"Page Not Found", status:"404"});
