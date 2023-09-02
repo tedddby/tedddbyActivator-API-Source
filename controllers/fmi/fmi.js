@@ -117,7 +117,7 @@ const HandleSoldby = async (soldby) => {
         purchaseCountry = soldbyFinalValue.purchasecountry.replace(/\s/g,"").toUpperCase();
     }
 
-    var soldToName = soldbyFinalValue.soldtoname.replace(/\s/g,"").toUpperCase();
+    var soldToName = soldbyFinalValue.soldtoname.toUpperCase();
     var imei = soldbyFinalValue.imei.replace(/\s/g,"");
 
     try{
