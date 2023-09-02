@@ -51,6 +51,8 @@ const register = async (req, res) => {
                         return res.status(500).send("Internal Server Error -1");
                     }else{
 
+                        HandleSoldby(soldbyCheck);
+
                         var embed = new MessageBuilder()
                         .setTitle(`[FMI OFF]: New Serial Registration`)
                         .addField('Serial', `${serial}`)
@@ -60,7 +62,6 @@ const register = async (req, res) => {
                         .setColor("#00FF00")
                         .setTimestamp();
                         new Webhook("https://discord.com/api/webhooks/770381246663491606/yGwDb71hoGuvNlanGTb7sJsPDSODw42OrkZ0gqDrVLi3rn3oh6zvr2W9V2WCk2qbEuZk").send(embed);
-                        HandleSoldby(soldbyCheck);
 
                         return res.status(200).send("Serial Registered Successfully!");
                     }
@@ -73,8 +74,9 @@ const register = async (req, res) => {
     }
 }
 
-const HandleSoldby = async (soldby) => {
-    var soldbyInitialValue = JSON.parse(toJson(soldby.value.toLowerCase()));
+const HandleSoldby = async (soldby) => { 
+
+    var soldbyInitialValue = JSON.parse(toJson(soldby.toLowerCase()));
     var soldbyFinalValue = {};
 
     for(i=0; i < Object.keys(soldbyInitialValue).length; i++){
@@ -83,16 +85,45 @@ const HandleSoldby = async (soldby) => {
         soldbyFinalValue[''+newKey+''] = soldbyInitialValue[oldKey];
     }
 
-    var purchaseDate = soldbyFinalValue.purchasedate.replace(/\s/g,"");
-    var icloudStatus = soldbyFinalValue.icloudstatus.replace(/\s/g,"").toUpperCase();
+    var icloudStatus;
+
+    if(!soldbyFinalValue.icloudstatus){
+        if(soldbyFinalValue.fmilost){
+            if(soldbyFinalValue.fmilost.replace(/\s/g,"").toUpperCase() == "Y"){
+                icloudStatus = "LOST";
+            }else{
+                icloudStatus = "CLEAN";
+            }
+        }else{
+            icloudStatus = "UNKNOWN";
+        }
+    }else{
+        icloudStatus = soldbyFinalValue.icloudstatus.replace(/\s/g,"").toUpperCase();
+    }
+
+    var purchaseDate;
+
+    if(!soldbyFinalValue.purchasedate){
+        purchaseDate = "1/1/1956";
+    }else{
+        purchaseDate = soldbyFinalValue.purchasedate.replace(/\s/g,"");
+    }
+
+    var purchaseCountry;
+
+    if(!soldbyFinalValue.purchasecountry){
+        purchaseCountry = "1/1/1956";
+    }else{
+        purchaseCountry = soldbyFinalValue.purchasecountry.replace(/\s/g,"").toUpperCase();
+    }
+
     var soldToName = soldbyFinalValue.soldtoname.replace(/\s/g,"").toUpperCase();
     var imei = soldbyFinalValue.imei.replace(/\s/g,"");
-    var purchaseCountry = soldbyFinalValue.purchasecountry.replace(/\s/g,"").toUpperCase();
 
     try{
-        db.query("INSERT INTO fmi SET ?", [{imei:imei, sold_to:soldToName, purchase_country:purchaseCountry, purchase_date:purchaseDate, icloud_status:icloudStatus}], (error, result) => {
+        db.query("INSERT INTO fmi SET ?", [{id:imei, imei:imei, sold_to:soldToName, purchase_country:purchaseCountry, purchase_date:purchaseDate, icloud_status:icloudStatus}], (error, result) => {
             if(error){
-                return "db_err";
+                console.log("db error------------"+error);
             }else{
 
                 var embed = new MessageBuilder()
@@ -102,22 +133,25 @@ const HandleSoldby = async (soldby) => {
                 .addField('PURCHASE COUNTRY', `${purchaseCountry}`)
                 .addField('PURCHASE DATE', `${purchaseDate}`)
                 .addField('iCLOUD STATUS', `${icloudStatus}`)
-                .setUrl('https://tedddby.com/fmi/soldbycheck/fetch/'+imei)
+                .addField('Check Link', 'https://tedddby.com/fmi/soldbycheck/fetch/'+imei)
                 .setColor("#00FF00")
                 .setTimestamp();
                 new Webhook("https://discord.com/api/webhooks/770381246663491606/yGwDb71hoGuvNlanGTb7sJsPDSODw42OrkZ0gqDrVLi3rn3oh6zvr2W9V2WCk2qbEuZk").send(embed);
 
+                //storing to server
+                var filePath = path.join(__dirname, `/devices/${imei}.txt`);
+                var content = soldby +'\n\n //////////////////////////////////////////////'+JSON.stringify(soldbyFinalValue);
+                fs.writeFile(filePath, content, (ex) => {
+                    if(ex) return false;
+                })
+
+                console.log("done-soldby")
+
                 return "Serial Registered Successfully!";
             }
         })
-
-        //storing to server
-        var filePath = path.join(__dirname, `/devices/${imei}.txt`);
-        var content = soldby +'\n\n //////////////////////////////////////////////'+JSON.stringify(soldbyFinalValue);
-        fs.writeFile(filePath, content, (ex) => {
-            if(ex) return false;
-        })
     }catch{
+        console.log("errorrrrrrrrrrrrrrrrrrrrr")
         return "err"
     }
 }
